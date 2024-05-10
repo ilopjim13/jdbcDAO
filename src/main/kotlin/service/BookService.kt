@@ -1,10 +1,10 @@
 package service
 
 import book.Book
-import dao.BookDAO
+import dao.IBookDAO
 import java.util.*
 
-class BookService(private val bookDAO: BookDAO):IBookService {
+class BookService(private val bookDAO: IBookDAO):IBookService {
     override fun create(book: Book): Book? {
         return bookDAO.create(book)
     }

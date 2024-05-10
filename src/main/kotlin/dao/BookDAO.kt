@@ -8,7 +8,7 @@ import javax.sql.DataSource
 
 class BookDAO(private val dataSource: DataSource, private val console: Console): IBookDAO {
     override fun create(book: Book): Book? {
-        val sql = "INSERT INTO tuser (id, name, email) VALUES (?, ?, ?, ?, ?)"
+        val sql = "INSERT INTO books (id, name, author, publicYear, theme) VALUES (?, ?, ?, ?, ?)"
         return try {
             dataSource.connection.use { conn ->
                 conn.prepareStatement(sql).use { stmt ->
@@ -33,7 +33,7 @@ class BookDAO(private val dataSource: DataSource, private val console: Console):
     }
 
     override fun getAll(): List<Book>? {
-        val sql = "SELECT * FROM tuser"
+        val sql = "SELECT * FROM BOOKS"
         return try {
             dataSource.connection.use { conn ->
                 conn.prepareStatement(sql).use { stmt ->
@@ -45,7 +45,7 @@ class BookDAO(private val dataSource: DataSource, private val console: Console):
                                 id = UUID.fromString(rs.getString("id")),
                                 name = rs.getString("name"),
                                 author = rs.getString("author"),
-                                publicYear = rs.getInt("2000"),
+                                publicYear = rs.getInt("publicYear"),
                                 theme = rs.getString("theme")
                             )
                         )
@@ -60,7 +60,7 @@ class BookDAO(private val dataSource: DataSource, private val console: Console):
     }
 
     override fun getById(id: UUID): Book? {
-        val sql = "SELECT * FROM tuser WHERE id = ?"
+        val sql = "SELECT * FROM BOOKS WHERE id = ?"
         return try{
             dataSource.connection.use { conn ->
                 conn.prepareStatement(sql).use { stmt ->
@@ -71,7 +71,7 @@ class BookDAO(private val dataSource: DataSource, private val console: Console):
                             id = UUID.fromString(rs.getString("id")),
                             name = rs.getString("name"),
                             author = rs.getString("author"),
-                            publicYear = rs.getInt("2000"),
+                            publicYear = rs.getInt("publicYear"),
                             theme = rs.getString("theme")
                         )
                     } else {
@@ -86,7 +86,7 @@ class BookDAO(private val dataSource: DataSource, private val console: Console):
     }
 
     override fun update(book: Book): Book? {
-        val sql = "UPDATE tuser SET name = ?, author = ? WHERE id = ?"
+        val sql = "UPDATE BOOKS SET name = ?, author = ? WHERE id = ?"
         return try{
             dataSource.connection.use { conn ->
                 conn.prepareStatement(sql).use { stmt ->
@@ -109,7 +109,7 @@ class BookDAO(private val dataSource: DataSource, private val console: Console):
     }
 
     override fun delete(id: UUID): Boolean {
-        val sql = "DELETE FROM tuser WHERE id = ?"
+        val sql = "DELETE FROM BOOKS WHERE id = ?"
         return try {
             dataSource.connection.use { conn ->
                 conn.prepareStatement(sql).use { stmt ->

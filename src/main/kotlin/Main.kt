@@ -1,70 +1,86 @@
 import book.Book
 import dao.BookDAO
+import dao.BookFileDAO
 import datasource.DataSourceFactory
+import fileManager.FileManager
 import output.Console
 import service.BookService
+import utilities.Utilities
+import java.io.File
 
 
 fun main() {
 
     val console = Console()
 
+
+
+    var choose = Utilities.typeChoose(console)
+
     // Creamos la instancia de la base de datos
     val dataSource = DataSourceFactory.getDS(DataSourceFactory.DataSourceType.HIKARI)
 
     // Creamos la instancia de UserDAO
-    val userDao = BookDAO(dataSource, console)
+    val bookDao =
+        if (choose) {
+            BookDAO(dataSource, console)
+        } else {
+            val fileDAO = FileManager()
+            BookFileDAO(fileDAO, File(""))
+        }
+
+
 
     // Creamos la instancia de UserService
-    val userService = BookService(userDao)
+    val bookService = BookService(bookDao)
 
     // Creamos un nuevo usuario
-    val newUser = Book(name = "John Doe", author = "johndoe@example.com", publicYear = 2000, theme = "theme")
-    var createdUser = userService.create(newUser)
+    val newBook = Book(name = "John Doe", author = "johndoe@example.com", publicYear = 2000, theme = "theme")
+    var createdBook = bookService.create(newBook)
 
-    console.showMessage("Created user: ${createdUser ?: "error"}")
+    console.showMessage("Created book: ${createdBook ?: "error"}")
 
 
 
     // Obtenemos un usuario por su ID
-    val foundUser =
-        if (createdUser != null )userService.getById(createdUser.id)
+    val foundBook =
+        if (createdBook != null )bookService.getById(createdBook.id)
         else null
-    console.showMessage("Found user: ${foundUser ?: "error"}")
+    console.showMessage("Found book: ${foundBook ?: "error"}")
 
     // Actualizamos el usuario
-    val updatedUser = foundUser?.copy(name = "Jane Doe")
-    val savedUser =
-        if (updatedUser != null) userService.update(updatedUser)
+    val updatedBook = foundBook?.copy(name = "Jane Doe")
+    val savedBook =
+        if (updatedBook != null) bookService.update(updatedBook)
         else null
-    console.showMessage("Updated user: $${savedUser ?: "error"}")
+    console.showMessage("Updated book: $${savedBook ?: "error"}")
 
-    val otherUser = Book(name = "Eduardo Fernandez", author = "eferoli@gmail.com", publicYear = 2000, theme = "theme")
-    createdUser = userService.create( otherUser)
-    console.showMessage("Created user: $${createdUser ?: "error"}")
+    val otherBook = Book(name = "Eduardo Fernandez", author = "eferoli@gmail.com", publicYear = 2000, theme = "theme")
+    createdBook = bookService.create( otherBook)
+    console.showMessage("Created book: $${createdBook ?: "error"}")
 
 
     // Obtenemos todos los usuarios
-    var allUsers = userService.getAll()
-    console.show(allUsers)
+    var allBooks = bookService.getAll()
+    console.show(allBooks)
 
     // Eliminamos el usuario
-    if (savedUser != null) {
-        if (userService.delete(savedUser.id)) console.showMessage("User deleted OK!")
-        else console.showMessage("User deleted error!")
+    if (savedBook != null) {
+        if (bookService.delete(savedBook.id)) console.showMessage("Book deleted OK!")
+        else console.showMessage("Book deleted error!")
     }
 
     // Obtenemos todos los usuarios
-    allUsers = userService.getAll()
-    console.show(allUsers)
+    allBooks = bookService.getAll()
+    console.show(allBooks)
 
     // Eliminamos el usuario
 
-    if (userService.delete(otherUser.id)) console.showMessage("User deleted OK!")
-    else console.showMessage("User deleted error!")
+    if (bookService.delete(otherBook.id)) console.showMessage("Book deleted OK!")
+    else console.showMessage("Book deleted error!")
 
     // Obtenemos todos los usuarios
-    allUsers = userService.getAll()
-    console.show(allUsers)
+    allBooks = bookService.getAll()
+    console.show(allBooks)
 
 }
