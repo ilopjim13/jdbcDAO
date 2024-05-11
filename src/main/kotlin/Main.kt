@@ -15,7 +15,7 @@ fun main() {
 
 
 
-    var choose = Utilities.typeChoose(console)
+    val choose = Utilities.typeChoose(console)
 
     // Creamos la instancia de la base de datos
     val dataSource = DataSourceFactory.getDS(DataSourceFactory.DataSourceType.HIKARI)
